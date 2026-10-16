@@ -50,6 +50,11 @@
             border-color: #60a5fa;
             transform: scale(0.98);
         }
+        .btn-other {
+            background-color: #1e3a8a;
+            border-color: #3b82f6;
+            grid-column: span 2;
+        }
         .status { margin-top: 8px; font-size: 14px; color: #3b82f6; }
     </style>
 </head>
@@ -63,37 +68,27 @@
     </div>
 
     <div class="grid">
-        <button onclick="playOrOpen('http://radiorecord.hostingradio.ru/mf96.aacp', 'Маятник Фуко', true)">Маятник Фуко</button>
-        <button onclick="playOrOpen('https://rr-00.hostingradio.ru/rr0096.aacp', 'Русское Радио', false)">Русское Радио</button>
-        <button onclick="playOrOpen('https://icecast-radiovanya.cdnvideo.ru/rv_90', 'Радио Ваня 90', false)">Радио Ваня 90</button>
-        <button onclick="playOrOpen('https://stream02.pcradio.biz/i_love_90_pcradio-hi', 'PCRadio 90s', false)">PCRadio 90s</button>
-        <button onclick="playOrOpen('http://solfm.ru:8000/solfm90', 'Sol FM 90', true)">Sol FM 90</button>
-        <button onclick="playOrOpen('http://radiorecord.hostingradio.ru/techno96.aacp', 'Record Techno', true)">Record Techno</button>
-        <button onclick="playOrOpen('http://radiorecord.hostingradio.ru/top100edm96.aacp', 'Record EDM', true)">Record EDM</button>
-        <button onclick="playOrOpen('http://radiorecord.hostingradio.ru/mt96.aacp', 'Record Minimal', true)">Record Minimal</button>
-        <button onclick="playOrOpen('https://online.kissfm.ua/KissFM_Ukr_Live', 'Kiss FM', false)">Kiss FM</button>
-        <button onclick="playOrOpen('http://radio.nrcu.gov.ua/ur1-mp3', 'Українське Радіо', true)">Українське Радіо</button>
+        <button onclick="playStream('https://rr-00.hostingradio.ru/rr0096.aacp', 'Русское Радио')">Русское Радио</button>
+        <button onclick="playStream('https://icecast-radiovanya.cdnvideo.ru/rv_90', 'Радио Ваня 90')">Радио Ваня 90</button>
+        <button onclick="playStream('https://stream02.pcradio.biz/i_love_90_pcradio-hi', 'PCRadio 90s')">PCRadio 90s</button>
+        <button onclick="playStream('http://radiorecord.hostingradio.ru/techno96.aacp', 'Record Techno')">Record Techno</button>
+        <button onclick="playStream('http://radiorecord.hostingradio.ru/top100edm96.aacp', 'Record EDM')">Record EDM</button>
+        <button onclick="playStream('http://radiorecord.hostingradio.ru/mt96.aacp', 'Record Minimal')">Record Minimal</button>
+        <button onclick="playStream('https://online.kissfm.ua/KissFM_Ukr_Live', 'Kiss FM')">Kiss FM</button>
+        <button class="btn-other" onclick="location.href='other.html'">Другие станции (Маятник Фуко, Sol FM, УР-1)</button>
     </div>
 
     <script>
         const audio = document.getElementById('audio');
         const status = document.getElementById('now-playing');
 
-        function playOrOpen(url, name, isDirect) {
-            if (isDirect) {
-                // Если станция на HTTP — открываем её напрямую
-                window.location.href = url;
-            } else {
-                // Если станция на HTTPS — играем прямо в плеере
-                audio.src = url;
-                audio.play();
-                status.textContent = 'Играет: ' + name;
-                
-                document.querySelectorAll('button').forEach(b => b.classList.remove('active'));
-                if (event && event.target) {
-                    event.target.classList.add('active');
-                }
-            }
+        function playStream(url, name) {
+            audio.src = url;
+            audio.play();
+            status.textContent = 'Играет: ' + name;
+            
+            document.querySelectorAll('button').forEach(b => b.classList.remove('active'));
+            event.target.classList.add('active');
         }
     </script>
 </body>

@@ -3,7 +3,7 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>My Tesla Radio</title>
+    <title>Tesla Web Radio</title>
     <style>
         body {
             background-color: #121212;
@@ -50,11 +50,6 @@
             border-color: #60a5fa;
             transform: scale(0.98);
         }
-        .btn-other {
-            background-color: #1e3a8a;
-            border-color: #3b82f6;
-            grid-column: span 2;
-        }
         .status { margin-top: 8px; font-size: 14px; color: #3b82f6; }
     </style>
 </head>
@@ -68,14 +63,22 @@
     </div>
 
     <div class="grid">
+        <!-- 3 станции открываются напрямую, чтобы точно работали -->
+        <button onclick="openDirect('http://radiorecord.hostingradio.ru/mf96.aacp')">Маятник Фуко</button>
+        
+        <!-- 7 станций играют в плеере -->
         <button onclick="playStream('https://rr-00.hostingradio.ru/rr0096.aacp', 'Русское Радио')">Русское Радио</button>
         <button onclick="playStream('https://icecast-radiovanya.cdnvideo.ru/rv_90', 'Радио Ваня 90')">Радио Ваня 90</button>
         <button onclick="playStream('https://stream02.pcradio.biz/i_love_90_pcradio-hi', 'PCRadio 90s')">PCRadio 90s</button>
+        
+        <button onclick="openDirect('http://solfm.ru:8000/solfm90')">Sol FM 90</button>
+        
         <button onclick="playStream('http://radiorecord.hostingradio.ru/techno96.aacp', 'Record Techno')">Record Techno</button>
         <button onclick="playStream('http://radiorecord.hostingradio.ru/top100edm96.aacp', 'Record EDM')">Record EDM</button>
         <button onclick="playStream('http://radiorecord.hostingradio.ru/mt96.aacp', 'Record Minimal')">Record Minimal</button>
         <button onclick="playStream('https://online.kissfm.ua/KissFM_Ukr_Live', 'Kiss FM')">Kiss FM</button>
-        <button class="btn-other" onclick="location.href='other.html'">Другие станции (Маятник Фуко, Sol FM, УР-1)</button>
+        
+        <button onclick="openDirect('http://radio.nrcu.gov.ua/ur1-mp3')">Українське Радіо</button>
     </div>
 
     <script>
@@ -89,6 +92,10 @@
             
             document.querySelectorAll('button').forEach(b => b.classList.remove('active'));
             event.target.classList.add('active');
+        }
+
+        function openDirect(url) {
+            window.location.href = url;
         }
     </script>
 </body>

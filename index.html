@@ -3,87 +3,132 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>Tesla Web Radio</title>
+    <title>Tesla Radio Player</title>
     <style>
         body {
             background-color: #121212;
             color: #ffffff;
             font-family: -apple-system, BlinkMacSystemFont, "Segoe UI", Roboto, sans-serif;
             margin: 0;
-            padding: 20px;
+            padding: 15px;
             display: flex;
             flex-direction: column;
             align-items: center;
         }
-        h1 { margin-bottom: 20px; font-size: 24px; color: #e5e5e5; }
-        .player-box {
+        h1 {
+            font-size: 18px;
+            margin: 0 0 15px 0;
+            color: #e0e0e0;
+        }
+        .player-container {
             width: 100%;
-            max-width: 600px;
-            margin-bottom: 25px;
-            text-align: center;
+            max-width: 480px;
             background: #1e1e1e;
             padding: 15px;
-            border-radius: 12px;
+            border-radius: 10px;
             box-shadow: 0 4px 15px rgba(0,0,0,0.5);
-        }
-        audio { width: 100%; margin-top: 10px; }
-        .grid {
-            display: grid;
-            grid-template-columns: 1fr 1fr;
+            display: flex;
+            flex-direction: column;
             gap: 12px;
+        }
+        audio {
             width: 100%;
-            max-width: 600px;
+            height: 36px;
+            border-radius: 6px;
+            outline: none;
+        }
+        .now-playing {
+            font-size: 13px;
+            color: #0088ff;
+            font-weight: 500;
+            min-height: 18px;
+            white-space: nowrap;
+            overflow: hidden;
+            text-overflow: ellipsis;
+        }
+        /* Компактная сетка для кнопок */
+        .station-grid {
+            display: grid;
+            grid-template-columns: repeat(2, 1fr); /* 2 колонки аккуратных небольших кнопок */
+            gap: 6px;
+            max-height: 300px;
+            overflow-y: auto;
         }
         button {
-            background-color: #2a2a2a;
-            color: #fff;
-            border: 2px solid #3d3d3d;
-            padding: 18px 10px;
-            font-size: 16px;
-            font-weight: bold;
-            border-radius: 10px;
+            padding: 8px 10px; /* Компактный размер */
+            border-radius: 6px;
+            border: 1px solid #333;
+            background: #2a2a2a;
+            color: #e0e0e0;
+            font-size: 13px;
             cursor: pointer;
-            transition: all 0.2s ease;
+            text-align: left;
+            white-space: nowrap;
+            overflow: hidden;
+            text-overflow: ellipsis;
+            transition: all 0.15s ease;
         }
-        button:active, button.active {
-            background-color: #3b82f6;
-            border-color: #60a5fa;
-            transform: scale(0.98);
+        button:hover {
+            background: #3a3a3a;
+            border-color: #555;
         }
-        .status { margin-top: 8px; font-size: 14px; color: #3b82f6; }
+        button.active {
+            background: #0066cc;
+            color: #ffffff;
+            border-color: #0088ff;
+            font-weight: bold;
+        }
     </style>
 </head>
 <body>
 
-    <h1>Tesla Web Radio</h1>
+    <h1>🚗 Авто Радио Плеер</h1>
 
-    <div class="player-box">
-        <div id="now-playing" class="status">Выберите станцию</div>
-        <audio id="audio" controls preload="none"></audio>
-    </div>
-
-    <div class="grid">
-        <button onclick="playStream('http://radiorecord.hostingradio.ru/mf96.aacp', 'Маятник Фуко')">Маятник Фуко</button>
-        <button onclick="playStream('https://rr-00.hostingradio.ru/rr0096.aacp', 'Русское Радио')">Русское Радио</button>
-        <button onclick="playStream('https://stream02.pcradio.biz/i_love_90_pcradio-hi', 'PCRadio 90s')">PCRadio 90s</button>
-        <button onclick="playStream('http://radiorecord.hostingradio.ru/techno96.aacp', 'Record Techno')">Record Techno</button>
-        <button onclick="playStream('http://radiorecord.hostingradio.ru/top100edm96.aacp', 'Record EDM')">Record EDM</button>
-        <button onclick="playStream('http://radiorecord.hostingradio.ru/mt96.aacp', 'Record Minimal')">Record Minimal</button>
-        <button onclick="playStream('https://online.kissfm.ua/KissFM_Ukr_Live', 'Kiss FM')">Kiss FM</button>
+    <div class="player-container">
+        <div class="now-playing" id="nowPlaying">Выберите станцию</div>
+        <audio id="audioPlayer" controls autoplay></audio>
+        
+        <div class="station-grid" id="stationList">
+            <!-- Компактные кнопки будут добавлены автоматически -->
+        </div>
     </div>
 
     <script>
-        const audio = document.getElementById('audio');
-        const status = document.getElementById('now-playing');
+        const stations = [
+            { name: "Українське Радіо", url: "https://stream.ukr.radio:8443/ur1-mp3" },
+            { name: "Кекс FM (90-2000)", url: "https://dorognoe.hostingradio.ru/keksfm64.aac" },
+            { name: "Дорожное радио", url: "https://online2.gkvr.ru:8001/doroznoe_kem_64.aac" },
+            // Сюда подставь свои 7 проверенных ссылок:
+            { name: "Маятник Фуко", url: "ТВОЯ_ССЫЛКА_7" },
+            { name: "Станция 2", url: "ТВОЯ_ССЫЛКА_2" },
+            { name: "Станция 3", url: "ТВОЯ_ССЫЛКА_3" },
+            { name: "Станция 4", url: "ТВОЯ_ССЫЛКА_4" },
+            { name: "Станция 5", url: "ТВОЯ_ССЫЛКА_5" },
+            { name: "Станция 6", url: "ТВОЯ_ССЫЛКА_6" },
+            { name: "Станция 7", url: "ТВОЯ_ССЫЛКА_7_ОБЩАЯ" }
+        ];
 
-        function playStream(url, name) {
-            audio.src = url;
-            audio.play();
-            status.textContent = 'Играет: ' + name;
-            
-            document.querySelectorAll('button').forEach(b => b.classList.remove('active'));
-            event.target.classList.add('active');
+        const audioPlayer = document.getElementById('audioPlayer');
+        const nowPlaying = document.getElementById('nowPlaying');
+        const stationList = document.getElementById('stationList');
+
+        function playStation(url, name, btnElement) {
+            audioPlayer.src = url;
+            audioPlayer.play().catch(e => console.log("Автоплей заблокирован браузером:", e));
+            nowPlaying.textContent = "Играет: " + name;
+
+            document.querySelectorAll('.station-grid button').forEach(b => b.classList.remove('active'));
+            if (btnElement) btnElement.classList.add('active');
         }
+
+        stations.forEach((station) => {
+            const btn = document.createElement('button');
+            btn.textContent = station.name;
+            btn.title = station.name;
+            btn.onclick = () => playStation(station.url, station.name, btn);
+            stationList.appendChild(btn);
+        });
     </script>
+
 </body>
 </html>
